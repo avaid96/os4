@@ -431,5 +431,31 @@ sys_removeFileTag(void)
   if (argstr(1, &key)<0){
     return -1;
   }
+  return removeFileTag(fileDescriptor, key);
+}
+
+int
+sys_getFileTag(void)
+{
+  int fileDescriptor;
+  char* key;
+  char* buffer;
+  int length;
+  
+  if (argint(0, &fileDescriptor)<0){
+    return -1;
+  }
+
+  if (argstr(1, &key)<0){
+    return -1;
+  }
+
+  if (argstr(2, &buffer)<0){
+    return -1;
+  }
+
+  if (argint(0, &length)<0){
+    return -1;
+  }
   return -1;
 }

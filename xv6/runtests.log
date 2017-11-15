@@ -226,15 +226,15 @@ ld  -m    elf_i386 -nostdlib --omagic \
 dd if=/dev/zero of=xv6.img count=10000
 10000+0 records in
 10000+0 records out
-5120000 bytes (5.1 MB) copied, 0.0180284 s, 284 MB/s
+5120000 bytes (5.1 MB) copied, 0.0232738 s, 220 MB/s
 dd if=kernel/bootblock of=xv6.img conv=notrunc
 1+0 records in
 1+0 records out
-512 bytes (512 B) copied, 9.7813e-05 s, 5.2 MB/s
+512 bytes (512 B) copied, 0.000115727 s, 4.4 MB/s
 dd if=kernel/kernel of=xv6.img seek=1 conv=notrunc
 256+1 records in
 256+1 records out
-131094 bytes (131 kB) copied, 0.000418984 s, 313 MB/s
+131337 bytes (131 kB) copied, 0.000541319 s, 243 MB/s
 gcc -c  -iquote include -Wall -Werror -ggdb  -o tools/mkfs.o tools/mkfs.c
 gcc  tools/mkfs.o -o tools/mkfs
 mkdir -p fs
@@ -311,7 +311,7 @@ stressfs
 tester
 zombie
 grep
-balloc: first 421 blocks have been allocated
+balloc: first 424 blocks have been allocated
 balloc: write bitmap block at sector 28
 rm user/bin/stressfs user/bin/grep user/bin/tester user/bin/kill user/bin/cat user/bin/mkdir user/bin/init user/bin/rm user/bin/echo user/bin/ls user/bin/ln user/bin/usertests user/bin/sh user/bin/wc user/bin/zombie
 
@@ -332,15 +332,54 @@ make
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
 		-M -MG user/tester.c -MF user/tester.d -MT user/tester.d -MT user/tester.o
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 -c -o user/tester.o user/tester.c
-cc1: warnings being treated as errors
-user/tester.c: In function ‘main’:
-user/tester.c:37: error: implicit declaration of function ‘getFileTag’
-make: *** [user/tester.o] Error 1
+ld  -m    elf_i386 -nostdlib --omagic --entry=main --section-start=.text=0x0 --output=user/bin/tester user/tester.o user/ulib.o user/usys.o user/printf.o user/umalloc.o
+cp user/bin/tester fs/tester
+./tools/mkfs fs.img fs
+used 29 (bit 1 ninode 26) free 29 total 1024
+README
+usertests
+sh
+mkdir
+kill
+rm
+cat
+ls
+wc
+echo
+init
+ln
+forktest
+stressfs
+tester
+zombie
+grep
+balloc: first 427 blocks have been allocated
+balloc: write bitmap block at sector 28
+rm user/bin/tester
+make qemu-nox 
+Ctrl+a h for help
+/home/software/qemu/bin/qemu-system-i386 -nographic -hdb fs.img xv6.img -smp 2
+WARNING: Image format was not specified for 'fs.img' and probing guessed raw.
+         Automatically detecting the format is dangerous for raw images, write operations on block 0 will be restricted.
+         Specify the 'raw' format explicitly to remove the restrictions.
+WARNING: Image format was not specified for 'xv6.img' and probing guessed raw.
+         Automatically detecting the format is dangerous for raw images, write operations on block 0 will be restricted.
+         Specify the 'raw' format explicitly to remove the restrictions.
+xv6...
+lapicinit: 1 0xfee00000
+cpu1: starting
+cpu0: starting
+init: starting sh
+$ tester
+tester
+fd of ls: 3
+user/tester.c: 38 assert failed (valueLength == len)
+TEST FAILED
 
 
 test removeFileTag FAILED
 Description: call tagFile to tag a file.  Call getFileTag to read the tag of that file. Call removeFileTag to remove the tag.  Call getFileTag again to verify that the tag is removed.
- make failed (error 2)
+ tester failed
 
 Finished running test removeFileTag
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
