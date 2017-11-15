@@ -390,3 +390,30 @@ sys_pipe(void)
   fd[1] = fd1;
   return 0;
 }
+
+int 
+sys_tagFile(void)
+{
+  int fileDescriptor;
+  char* key;
+  char* value;
+  int valueLength;
+  
+  if (argint(0, &fileDescriptor)<0){
+    return -1;
+  }
+
+  if (argstr(1, &key)<0){
+    return -1;
+  }
+
+  if (argstr(2, &value)<0){
+    return -1;
+  }
+
+  if (argint(3, &valueLength)<0){
+    return -1;
+  }
+
+  return tagFile(fileDescriptor, key, value, valueLength);
+}

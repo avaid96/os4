@@ -226,15 +226,15 @@ ld  -m    elf_i386 -nostdlib --omagic \
 dd if=/dev/zero of=xv6.img count=10000
 10000+0 records in
 10000+0 records out
-5120000 bytes (5.1 MB) copied, 0.0123321 s, 415 MB/s
+5120000 bytes (5.1 MB) copied, 0.0352952 s, 145 MB/s
 dd if=kernel/bootblock of=xv6.img conv=notrunc
 1+0 records in
 1+0 records out
-512 bytes (512 B) copied, 6.919e-05 s, 7.4 MB/s
+512 bytes (512 B) copied, 0.000175964 s, 2.9 MB/s
 dd if=kernel/kernel of=xv6.img seek=1 conv=notrunc
-252+1 records in
-252+1 records out
-129436 bytes (129 kB) copied, 0.000279026 s, 464 MB/s
+254+1 records in
+254+1 records out
+130475 bytes (130 kB) copied, 0.000780069 s, 167 MB/s
 gcc -c  -iquote include -Wall -Werror -ggdb  -o tools/mkfs.o tools/mkfs.c
 gcc  tools/mkfs.o -o tools/mkfs
 mkdir -p fs
@@ -295,23 +295,23 @@ cp user/bin/zombie fs/zombie
 ./tools/mkfs fs.img fs
 used 29 (bit 1 ninode 26) free 29 total 1024
 README
-echo
+usertests
+sh
+mkdir
+kill
+rm
 cat
+ls
+wc
+echo
 init
 ln
-zombie
-tester
-sh
-grep
-stressfs
-usertests
-rm
-mkdir
-wc
 forktest
-kill
-ls
-balloc: first 419 blocks have been allocated
+stressfs
+tester
+zombie
+grep
+balloc: first 421 blocks have been allocated
 balloc: write bitmap block at sector 28
 rm user/bin/stressfs user/bin/grep user/bin/tester user/bin/kill user/bin/cat user/bin/mkdir user/bin/init user/bin/rm user/bin/echo user/bin/ls user/bin/ln user/bin/usertests user/bin/sh user/bin/wc user/bin/zombie
 
@@ -326,7 +326,7 @@ Finished running test build
 Start running test tagFile
 Description: call tagFile to tag a file.  Call getFileTag to read the tag of that file.
 
-Running xv6 user progam /home/aav336/os4/xv6/provided-basic-tests/tests/ctests/proj4/tagFile.c
+Running xv6 user progam /home/wom020/343/Lab4/xv6/provided-basic-tests/tests/ctests/proj4/tagFile.c
 Trying to build project using make
 make
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
@@ -334,7 +334,6 @@ gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 -c -o user/tester.o user/tester.c
 cc1: warnings being treated as errors
 user/tester.c: In function ‘main’:
-user/tester.c:33: error: implicit declaration of function ‘tagFile’
 user/tester.c:37: error: implicit declaration of function ‘getFileTag’
 make: *** [user/tester.o] Error 1
 

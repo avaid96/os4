@@ -1,5 +1,6 @@
 #include "types.h"
 #include "x86.h"
+#include "fs.h"
 
 void*
 memset(void *dst, int c, uint n)
@@ -99,3 +100,43 @@ strlen(const char *s)
   return n;
 }
 
+int
+findKeyInString(uchar* key, int keyLength, uchar* datastr)
+{
+  int i, j;
+  for (i=0; i<BSIZE; i+=32) //max total tag size
+  {
+    j=0;
+    while(j<10 &&  // j is key index 
+	  i+j<BSIZE && // i/32 tag's jth byte
+	  key[j] && // if the key has anything at that point (null ref check)
+	  datastr[i+j] && // if the datastr has something at that point (null ref check) 
+ 	  key[j]==datastr[i+j]) // check if the character are the same
+    {
+      j++;
+    }
+    if (j == keyLength &&
+	!key[j] &&
+	!datastr[i+j])
+    {
+      return i+j-keyLength;
+    }
+  }
+  return -1;
+}
+
+int 
+findTheEnd(uchar* datastr)
+{
+  int i=0;
+  while(i<BSIZE &&
+	datastr[i])
+  {
+    i+=32;
+  }
+  if (i==BSIZE)
+  {
+    return -1;
+  }
+  return i;
+} 
