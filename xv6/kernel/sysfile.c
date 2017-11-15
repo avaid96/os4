@@ -417,3 +417,19 @@ sys_tagFile(void)
 
   return tagFile(fileDescriptor, key, value, valueLength);
 }
+
+int
+sys_removeFileTag(void)
+{
+  int fileDescriptor;
+  char* key;
+  
+  if (argint(0, &fileDescriptor)<0){
+    return -1;
+  }
+
+  if (argstr(1, &key)<0){
+    return -1;
+  }
+  return -1;
+}

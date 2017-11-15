@@ -613,14 +613,41 @@ nameiparent(char *path, char *name)
 }
 
 int
-tagFile(int fileDescriptor, char* key, char* value, int valueLength)
+doCommonChecks(int fileDescriptor, char* key)
 {
-  struct file *f; 
+  struct file *f;
   int keyLength;
-  struct buf *bufptr;
-  uchar *datastr;
 
   if (fileDescriptor<0 || fileDescriptor>=NOFILE)
+  {
+    return -1;
+  }
+  if ((f=proc->ofile[fileDescriptor])==0)
+  {
+    return -1;
+  }
+  if (f->type != FD_INODE || !f->writable || !f->ip)
+  {
+    // file must be opened in write mode and check inode and its ptr
+    return -1;
+  }
+  if ( !key || (keyLength = strlen(key)) < 1 || keyLength > 9)
+  {
+    // The key must be at least 2 bytes (including the null termination byte) and at most 10 bytes (including the null termination byte).
+    return -1;
+  }
+  return 0;
+}
+
+int
+tagFile(int fileDescriptor, char* key, char* value, int valueLength)
+{
+  uchar *datastr;
+  int keySize;
+  struct file *f; 
+  struct buf *bufptr;
+
+  /*if (fileDescriptor<0 || fileDescriptor>=NOFILE)
   {
     return -1;
   }
@@ -637,6 +664,21 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   {
     // The key must be at least 2 bytes (including the null termination byte) and at most 10 bytes (including the null termination byte).
     return -1;
+  }*/
+
+  if (doCommonChecks(fileDescriptor, key) == -1)
+  {
+    return -1;
+  }
+  else
+  {
+    f = proc->ofile[fileDescriptor];
+    keySize = strlen(key);
+  }
+
+  if ( !value || valueLength <0 || valueLength > 18)
+  {
+    return -1;
   }
   ilock(f->ip); // get tags and stuff from inode to which f points
   if (!f->ip->tags)
@@ -645,7 +687,7 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   }
   bufptr = bread(f->ip->dev, f->ip->tags);
   datastr = (uchar*) bufptr->data;
-  int keyPosition = findKeyInString((uchar*)key, keyLength, (uchar*) datastr);
+  int keyPosition = findKeyInString((uchar*)key, keySize, (uchar*) datastr);
   if (keyPosition < 0)
   {
     int end = findTheEnd((uchar*)datastr);
@@ -656,7 +698,7 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
        return -1;
     }
     memset((void*)((uint)datastr + (uint)end), 0, 28);
-    memmove((void*)((uint)datastr + (uint)end), (void*)key, (uint)keyLength);
+    memmove((void*)((uint)datastr + (uint)end), (void*)key, (uint)keySize);
     memmove((void*)((uint)datastr + (uint)end + 10), (void*)value, (uint)valueLength); 
     bwrite(bufptr);
     brelse(bufptr);
@@ -670,4 +712,46 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   iunlock(f->ip);
   return 1;
 }
+
+int
+removeFileTag(int fileDescriptor, char* key)
+{
+  uchar *datastr;
+  int keySize;
+  struct file *f;
+  struct buf *bufptr;
+
+  if(doCommonChecks(fileDescriptor, key) == -1)
+  {
+    return -1;
+  }
+  else
+  {
+    f = proc->ofile[fileDescriptor];
+    keySize = strlen(key);
+  }
+  if (!f->ip->tags)
+  {
+    return -1;
+  }
+  ilock(f->ip);
+  bufptr = bread(f->ip->dev,
+		f->ip->tags);
+  datastr = (uchar*)bufptr->data;
+  int keyPosition = findKeyInString((uchar*)key, keySize, (uchar*) datastr);
+  if (keyPosition < 0)
+  {
+    brelse(bufptr);
+    iunlock(f->ip);
+    return -1;
+  }
+
+  memset((void*)((uint)datastr + (uint)keyPosition + 10), 0, 28);
+  bwrite(bufptr);
+  brelse(bufptr);
+  iunlock(f->ip);
+  return 1;
+   
+}
+
   

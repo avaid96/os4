@@ -52,6 +52,7 @@ int             readi(struct inode*, char*, uint, uint);
 void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, char*, uint, uint);
 int 		tagFile(int fileDescriptor, char* key, char* value, int valueLength);
+int		removeFileTag(int fileDescriptor, char* key);
 
 // ide.c
 void            ideinit(void);
@@ -133,6 +134,7 @@ int             strncmp(const char*, const char*, uint);
 char*           strncpy(char*, const char*, int);
 int             findKeyInString(uchar*, int,  uchar*);
 int             findTheEnd(uchar*);
+int		doCommonChecks(int, char*);
 
 // syscall.c
 int             argint(int, int*);
