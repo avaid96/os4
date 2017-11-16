@@ -454,8 +454,8 @@ sys_getFileTag(void)
     return -1;
   }
 
-  if (argint(0, &length)<0){
+  if (argint(3, &length)<0){
     return -1;
   }
-  return -1;
+  return getFileTag(fileDescriptor, key, buffer, length);
 }

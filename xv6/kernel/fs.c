@@ -646,7 +646,6 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   int keySize;
   struct file *f; 
   struct buf *bufptr;
-
   /*if (fileDescriptor<0 || fileDescriptor>=NOFILE)
   {
     return -1;
@@ -754,4 +753,68 @@ removeFileTag(int fileDescriptor, char* key)
    
 }
 
+int 
+getFileTag(int fileDescriptor, char* key, char* buffer, int length)
+{
+  struct file *f;
+  int keyLength;
+  int valueLength;
+  struct buf *bp;
+  uchar str[BSIZE];
+  uchar *value;
+  if (fileDescriptor < 0 || fileDescriptor >= NOFILE)
+  {
+     return -1;
+  }
+  if ((f = proc->ofile[fileDescriptor]) == 0)
+  {
+     return -2;
+  }
+  if (f->type != FD_INODE || !f->readable || !f->ip)
+  {
+     return -3;
+  }
+  if (!key || (keyLength = strlen(key)) < 1 || keyLength> 9)
+  {
+     return -4;
+  }
+  if (!buffer)
+  {
+     return -5;
+  }
+  if (length < 0 || length > 18)
+  {
+     return -6;
+  }
   
+
+  ilock(f->ip);
+  if (!f->ip->tags)
+  {
+    f->ip->tags = balloc(f->ip->dev);
+  }
+  bp = bread(f->ip->dev, f->ip->tags);
+  memmove((void*)str, (void*)bp->data, (uint)BSIZE);
+  brelse(bp);
+  
+  iunlock(f->ip);
+  
+  keyLength = strlen(key);
+  int keyPos = findKeyInString((uchar*)key, keyLength, (uchar*)str);
+  if (keyPos < 0){
+    return -7;
+  }
+  value = (uchar*)((uint)str + (uint)keyPos + 10);
+  valueLength = 17;
+  while (valueLength >= 0 && !value[valueLength])
+  {
+    valueLength--;
+  }
+  valueLength++;
+  if (!valueLength)
+  {
+    return -8;
+  }
+  memmove((void*)buffer, (void*)value, (uint)min(length, valueLength));
+  return valueLength;
+}

@@ -53,6 +53,7 @@ void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, char*, uint, uint);
 int 		tagFile(int fileDescriptor, char* key, char* value, int valueLength);
 int		removeFileTag(int fileDescriptor, char* key);
+int 		getFileTag(int fileDescriptor, char* key, char* buffer, int length);
 
 // ide.c
 void            ideinit(void);
