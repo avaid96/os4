@@ -768,23 +768,23 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
   }
   if ((f = proc->ofile[fileDescriptor]) == 0)
   {
-     return -2;
+     return -1;
   }
   if (f->type != FD_INODE || !f->readable || !f->ip)
   {
-     return -3;
+     return -1;
   }
   if (!key || (keyLength = strlen(key)) < 1 || keyLength> 9)
   {
-     return -4;
+     return -1;
   }
   if (!buffer)
   {
-     return -5;
+     return -1;
   }
   if (length < 0 || length > 18)
   {
-     return -6;
+     return -1;
   }
   
 
@@ -800,9 +800,9 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
   iunlock(f->ip);
   
   keyLength = strlen(key);
-  int keyPos = findKeyInString((uchar*)key, keyLength, (uchar*)str);
+  int keyPos = findKeyInString((uchar*) key, keyLength, (uchar*) str);
   if (keyPos < 0){
-    return -7;
+    return -1;
   }
   value = (uchar*)((uint)str + (uint)keyPos + 10);
   valueLength = 17;
@@ -813,7 +813,7 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
   valueLength++;
   if (!valueLength)
   {
-    return -8;
+    return -1;
   }
   memmove((void*)buffer, (void*)value, (uint)min(length, valueLength));
   return valueLength;
