@@ -17,7 +17,9 @@ USER_PROGS := \
 	usertests\
 	wc\
 	zombie\
-	tagFile
+	tagFile\
+        getAllTags\
+        getAllTags1\
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))
 

@@ -833,7 +833,8 @@ getAllTags(int fileDescriptor, struct Key keys[], int maxTags) {
    memmove((void*)str, (void*)bp->data, (uint)BSIZE);
    brelse(bp);
    iunlock(f->ip);
-   for (i = 0, j = 0; j < BSIZE; i += 32){
+   cprintf("iabc\n");
+   for (i = 0, j = 0; i < BSIZE; i += 32){
       if (str[i]){
          memmove((void*)keys[j].key, (void*)((uint)str + i), (uint)strlen((char*)((uint)str + (uint)i)));
          j++;

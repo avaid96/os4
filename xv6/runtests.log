@@ -5,13 +5,7 @@ build xv6 using make
 
 Trying to clean project using make clean
 make clean
-Makefile:149: user/tagFile.d: No such file or directory
-No rule to make target user/tagFile.d
-gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
-		-M -MG kernel/fs.c -MF kernel/fs.d -MT kernel/fs.d -MT kernel/fs.o
-Makefile:149: user/tagFile.d: No such file or directory
-No rule to make target user/tagFile.d
-rm -rf kernel/bio.o kernel/console.o kernel/exec.o kernel/file.o kernel/fs.o kernel/ide.o kernel/ioapic.o kernel/kalloc.o kernel/kbd.o kernel/lapic.o kernel/main.o kernel/mp.o kernel/picirq.o kernel/pipe.o kernel/proc.o kernel/spinlock.o kernel/string.o kernel/swtch.o kernel/syscall.o kernel/sysfile.o kernel/sysproc.o kernel/timer.o kernel/trapasm.o kernel/trap.o kernel/uart.o kernel/vectors.o kernel/vm.o kernel/bootmain.o kernel/bootasm.o kernel/multiboot.o kernel/data.o kernel/bootother.o kernel/initcode.o kernel/bio.d kernel/console.d kernel/exec.d kernel/file.d kernel/fs.d kernel/ide.d kernel/ioapic.d kernel/kalloc.d kernel/kbd.d kernel/lapic.d kernel/main.d kernel/mp.d kernel/picirq.d kernel/pipe.d kernel/proc.d kernel/spinlock.d kernel/string.d kernel/swtch.d kernel/syscall.d kernel/sysfile.d kernel/sysproc.d kernel/timer.d kernel/trapasm.d kernel/trap.d kernel/uart.d kernel/vectors.d kernel/vm.d kernel/bootmain.d kernel/bootasm.d kernel/multiboot.d kernel/data.d kernel/bootother.d kernel/initcode.d kernel/vectors.S kernel/bootblock kernel/bootblock.out kernel/bootother.out kernel/initcode.out kernel/kernel bootother initcode xv6.img user/bin user/cat user/echo user/forktest user/grep user/init user/kill user/ln user/ls user/mkdir user/rm user/sh user/stressfs user/tester user/usertests user/wc user/zombie user/tagFile user/cat.o user/echo.o user/forktest.o user/grep.o user/init.o user/kill.o user/ln.o user/ls.o user/mkdir.o user/rm.o user/sh.o user/stressfs.o user/tester.o user/usertests.o user/wc.o user/zombie.o user/tagFile.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/cat.d user/echo.d user/forktest.d user/grep.d user/init.d user/kill.d user/ln.d user/ls.d user/mkdir.d user/rm.d user/sh.d user/stressfs.d user/tester.d user/usertests.d user/wc.d user/zombie.d user/tagFile.d user/ulib.d user/usys.d user/printf.d user/umalloc.d tools/mkfs tools/mkfs.o tools/mkfs.d fs fs.img .gdbinit .bochsrc dist
+rm -rf kernel/bio.o kernel/console.o kernel/exec.o kernel/file.o kernel/fs.o kernel/ide.o kernel/ioapic.o kernel/kalloc.o kernel/kbd.o kernel/lapic.o kernel/main.o kernel/mp.o kernel/picirq.o kernel/pipe.o kernel/proc.o kernel/spinlock.o kernel/string.o kernel/swtch.o kernel/syscall.o kernel/sysfile.o kernel/sysproc.o kernel/timer.o kernel/trapasm.o kernel/trap.o kernel/uart.o kernel/vectors.o kernel/vm.o kernel/bootmain.o kernel/bootasm.o kernel/multiboot.o kernel/data.o kernel/bootother.o kernel/initcode.o kernel/bio.d kernel/console.d kernel/exec.d kernel/file.d kernel/fs.d kernel/ide.d kernel/ioapic.d kernel/kalloc.d kernel/kbd.d kernel/lapic.d kernel/main.d kernel/mp.d kernel/picirq.d kernel/pipe.d kernel/proc.d kernel/spinlock.d kernel/string.d kernel/swtch.d kernel/syscall.d kernel/sysfile.d kernel/sysproc.d kernel/timer.d kernel/trapasm.d kernel/trap.d kernel/uart.d kernel/vectors.d kernel/vm.d kernel/bootmain.d kernel/bootasm.d kernel/multiboot.d kernel/data.d kernel/bootother.d kernel/initcode.d kernel/vectors.S kernel/bootblock kernel/bootblock.out kernel/bootother.out kernel/initcode.out kernel/kernel bootother initcode xv6.img user/bin user/cat user/echo user/forktest user/grep user/init user/kill user/ln user/ls user/mkdir user/rm user/sh user/stressfs user/tester user/usertests user/wc user/zombie user/tagFile user/getAllTags user/getAllTags1 user/cat.o user/echo.o user/forktest.o user/grep.o user/init.o user/kill.o user/ln.o user/ls.o user/mkdir.o user/rm.o user/sh.o user/stressfs.o user/tester.o user/usertests.o user/wc.o user/zombie.o user/tagFile.o user/getAllTags.o user/getAllTags1.o user/ulib.o user/usys.o user/printf.o user/umalloc.o user/cat.d user/echo.d user/forktest.d user/grep.d user/init.d user/kill.d user/ln.d user/ls.d user/mkdir.d user/rm.d user/sh.d user/stressfs.d user/tester.d user/usertests.d user/wc.d user/zombie.d user/tagFile.d user/getAllTags.d user/getAllTags1.d user/ulib.d user/usys.d user/printf.d user/umalloc.d tools/mkfs tools/mkfs.o tools/mkfs.d fs fs.img .gdbinit .bochsrc dist
 Trying to build project using make
 make
 Makefile:149: kernel/bio.d: No such file or directory
@@ -64,6 +58,8 @@ Makefile:149: user/usertests.d: No such file or directory
 Makefile:149: user/wc.d: No such file or directory
 Makefile:149: user/zombie.d: No such file or directory
 Makefile:149: user/tagFile.d: No such file or directory
+Makefile:149: user/getAllTags.d: No such file or directory
+Makefile:149: user/getAllTags1.d: No such file or directory
 Makefile:149: user/ulib.d: No such file or directory
 Makefile:149: user/usys.d: No such file or directory
 Makefile:149: user/printf.d: No such file or directory
@@ -79,7 +75,12 @@ gcc  -I include -nostdinc -ggdb  -fno-pic -fno-builtin -fno-strict-aliasing -fno
 		-M -MG user/usys.S -MF user/usys.d -MT user/usys.d -MT user/usys.o
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
 		-M -MG user/ulib.c -MF user/ulib.d -MT user/ulib.d -MT user/ulib.o
-No rule to make target user/tagFile.d
+gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
+		-M -MG user/getAllTags1.c -MF user/getAllTags1.d -MT user/getAllTags1.d -MT user/getAllTags1.o
+gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
+		-M -MG user/getAllTags.c -MF user/getAllTags.d -MT user/getAllTags.d -MT user/getAllTags.o
+gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
+		-M -MG user/tagFile.c -MF user/tagFile.d -MT user/tagFile.d -MT user/tagFile.o
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
 		-M -MG user/zombie.c -MF user/zombie.d -MT user/zombie.d -MT user/zombie.o
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
@@ -179,8 +180,6 @@ gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-
 		-M -MG kernel/console.c -MF kernel/console.d -MT kernel/console.d -MT kernel/console.o
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
 		-M -MG kernel/bio.c -MF kernel/bio.d -MT kernel/bio.d -MT kernel/bio.o
-Makefile:149: user/tagFile.d: No such file or directory
-No rule to make target user/tagFile.d
 gcc  -I include -nostdinc -ggdb  -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 -c kernel/bootasm.S -o kernel/bootasm.o
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
 		 -Os -c -o kernel/bootmain.o kernel/bootmain.c
@@ -236,15 +235,15 @@ ld  -m    elf_i386 -nostdlib --omagic \
 dd if=/dev/zero of=xv6.img count=10000
 10000+0 records in
 10000+0 records out
-5120000 bytes (5.1 MB) copied, 0.0130477 s, 392 MB/s
+5120000 bytes (5.1 MB) copied, 0.0122317 s, 419 MB/s
 dd if=kernel/bootblock of=xv6.img conv=notrunc
 1+0 records in
 1+0 records out
-512 bytes (512 B) copied, 8.5498e-05 s, 6.0 MB/s
+512 bytes (512 B) copied, 6.8778e-05 s, 7.4 MB/s
 dd if=kernel/kernel of=xv6.img seek=1 conv=notrunc
 259+1 records in
 259+1 records out
-132722 bytes (133 kB) copied, 0.000306121 s, 434 MB/s
+132722 bytes (133 kB) copied, 0.000281537 s, 471 MB/s
 gcc -c  -iquote include -Wall -Werror -ggdb  -o tools/mkfs.o tools/mkfs.c
 gcc  tools/mkfs.o -o tools/mkfs
 mkdir -p fs
@@ -302,13 +301,23 @@ cp user/bin/wc fs/wc
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 -c -o user/zombie.o user/zombie.c
 ld  -m    elf_i386 -nostdlib --omagic --entry=main --section-start=.text=0x0 --output=user/bin/zombie user/zombie.o user/ulib.o user/usys.o user/printf.o user/umalloc.o
 cp user/bin/zombie fs/zombie
-No rule to make target fs/tagFile
+gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 -c -o user/tagFile.o user/tagFile.c
+ld  -m    elf_i386 -nostdlib --omagic --entry=main --section-start=.text=0x0 --output=user/bin/tagFile user/tagFile.o user/ulib.o user/usys.o user/printf.o user/umalloc.o
+cp user/bin/tagFile fs/tagFile
+gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 -c -o user/getAllTags.o user/getAllTags.c
+ld  -m    elf_i386 -nostdlib --omagic --entry=main --section-start=.text=0x0 --output=user/bin/getAllTags user/getAllTags.o user/ulib.o user/usys.o user/printf.o user/umalloc.o
+cp user/bin/getAllTags fs/getAllTags
+gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 -c -o user/getAllTags1.o user/getAllTags1.c
+ld  -m    elf_i386 -nostdlib --omagic --entry=main --section-start=.text=0x0 --output=user/bin/getAllTags1 user/getAllTags1.o user/ulib.o user/usys.o user/printf.o user/umalloc.o
+cp user/bin/getAllTags1 fs/getAllTags1
 ./tools/mkfs fs.img fs
 used 29 (bit 1 ninode 26) free 29 total 1024
 README
 echo
 cat
+getAllTags1
 init
+getAllTags
 ln
 zombie
 tester
@@ -322,9 +331,10 @@ wc
 forktest
 kill
 ls
-balloc: first 424 blocks have been allocated
+tagFile
+balloc: first 492 blocks have been allocated
 balloc: write bitmap block at sector 28
-rm user/bin/stressfs user/bin/grep user/bin/tester user/bin/kill user/bin/cat user/bin/mkdir user/bin/init user/bin/rm user/bin/echo user/bin/ls user/bin/ln user/bin/usertests user/bin/sh user/bin/wc user/bin/zombie
+rm user/bin/stressfs user/bin/tagFile user/bin/grep user/bin/tester user/bin/kill user/bin/cat user/bin/mkdir user/bin/init user/bin/rm user/bin/echo user/bin/getAllTags1 user/bin/ls user/bin/ln user/bin/usertests user/bin/sh user/bin/wc user/bin/getAllTags user/bin/zombie
 
 
 test build PASSED (5 of 5)
@@ -334,28 +344,25 @@ Finished running test build
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **********************************************************************
-Start running test getAllTags
-Description: getAllTags issue
+Start running test getAllTags1
+Description:nclude "types.h"
 
-Running xv6 user progam /home/jsh468/os4/xv6/provided-basic-tests/tests/ctests/proj4/getAllTags.c
+Running xv6 user progam /home/aav336/os4/xv6/provided-basic-tests/tests/ctests/proj4/getAllTags1.c
 Trying to build project using make
 make
-Makefile:149: user/tagFile.d: No such file or directory
-No rule to make target user/tagFile.d
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
 		-M -MG user/tester.c -MF user/tester.d -MT user/tester.d -MT user/tester.o
-Makefile:149: user/tagFile.d: No such file or directory
-No rule to make target user/tagFile.d
 gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 -c -o user/tester.o user/tester.c
 ld  -m    elf_i386 -nostdlib --omagic --entry=main --section-start=.text=0x0 --output=user/bin/tester user/tester.o user/ulib.o user/usys.o user/printf.o user/umalloc.o
 cp user/bin/tester fs/tester
-No rule to make target fs/tagFile
 ./tools/mkfs fs.img fs
 used 29 (bit 1 ninode 26) free 29 total 1024
 README
 echo
 cat
+getAllTags1
 init
+getAllTags
 ln
 zombie
 tester
@@ -369,34 +376,11 @@ wc
 forktest
 kill
 ls
-balloc: first 427 blocks have been allocated
+tagFile
+balloc: first 495 blocks have been allocated
 balloc: write bitmap block at sector 28
 rm user/bin/tester
 make qemu-nox 
-Makefile:149: user/tagFile.d: No such file or directory
-No rule to make target user/tagFile.d
-No rule to make target fs/tagFile
-./tools/mkfs fs.img fs
-used 29 (bit 1 ninode 26) free 29 total 1024
-README
-echo
-cat
-init
-ln
-zombie
-tester
-sh
-grep
-stressfs
-usertests
-rm
-mkdir
-wc
-forktest
-kill
-ls
-balloc: first 427 blocks have been allocated
-balloc: write bitmap block at sector 28
 Ctrl+a h for help
 /home/software/qemu/bin/qemu-system-i386 -nographic -hdb fs.img xv6.img -smp 2
 WARNING: Image format was not specified for 'fs.img' and probing guessed raw.
@@ -412,15 +396,20 @@ cpu0: starting
 init: starting sh
 $ tester
 tester
-numTags = -1
-getAllTags test passed
+iabc
+numTags = 4
+Here is a list of this file's tags:
+type: yeildxxx
+language: Javadxxx
+school: MITadxxx
+Game: CUBAdxxx
 $ 
 
-test getAllTags FAILED
-Description: getAllTags issue
+test getAllTags1 FAILED
+Description:nclude "types.h"
  tester failed
 
-Finished running test getAllTags
+Finished running test getAllTags1
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Skipped 0 tests.
 To keep testing after failing a test, use flag '-c' or '--continue'

@@ -28,8 +28,8 @@ test_values = [
   #{'name': 'removeFileTag'},
   #{'name': '17string'},
   # extra cred
-  {'name': 'getAllTags'},
-  #{'name': 'getAllTags1'},
+  #{'name': 'getAllTags'},
+  {'name': 'getAllTags1'},
   #{'name': 'getAllTags1'},
   #{'name': 'getFileTag'},
   #{'name': 'getFilesByTag'},
