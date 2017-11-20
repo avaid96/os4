@@ -804,7 +804,42 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
 
 int 
 getAllTags(int fileDescriptor, struct Key keys[], int maxTags) {
-  return -1;
+   struct file *f;
+   struct buf *bp;
+   uchar str[BSIZE];
+   uint i;
+   int j;
+   if (fileDescriptor < 0 || fileDescriptor >= NOFILE || (f = proc->ofile[fileDescriptor]) == 0)
+   {
+     return -1;
+   }
+   if (f->type != FD_INODE || !f->readable || !f->ip)
+   {
+     return -1;
+   }
+   if (!keys)
+   {
+     return -1;
+   }
+   if (maxTags < 0)
+   {
+     return -1;
+   }
+   ilock(f->ip);
+   if (!f->ip->tags){
+      f->ip->tags = balloc(f->ip->dev);
+   }
+   bp = bread(f->ip->dev, f->ip->tags);
+   memmove((void*)str, (void*)bp->data, (uint)BSIZE);
+   brelse(bp);
+   iunlock(f->ip);
+   for (i = 0, j = 0; j < BSIZE; i += 32){
+      if (str[i]){
+         memmove((void*)keys[j].key, (void*)((uint)str + i), (uint)strlen((char*)((uint)str + (uint)i)));
+         j++;
+      }
+   }
+   return j;  
 }
 
 int
