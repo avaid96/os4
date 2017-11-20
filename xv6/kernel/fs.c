@@ -647,27 +647,6 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   int keySize;
   struct file *f; 
   struct buf *bufptr;
-  /*
-  if (fileDescriptor<0 || fileDescriptor>=NOFILE)
-  {
-    return -1;
-  }
-  if ((f=proc->ofile[fileDescriptor])==0)
-  {
-    return -1;
-  }
-  if (f->type != FD_INODE || !f->writable || !f->ip)
-  { 
-    // file must be opened in write mode and check inode and its ptr
-    return -1;
-  }
-  if ( !key || (keyLength = strlen(key)) < 1 || keyLength > 9)
-  {
-    // The key must be at least 2 bytes (including the null termination byte) and at most 10 bytes (including the null termination byte).
-    return -1;
-  }
-  */
-
   if (doCommonChecks(fileDescriptor, key) == -1)
   {
     return -1;
@@ -678,7 +657,7 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
     keySize = strlen(key);
   }
 
-  if ( !value || valueLength <0 || valueLength > 18)
+  if ( !value || valueLength <0 || valueLength > 18 )
   {
     return -1;
   }
@@ -819,4 +798,16 @@ getFileTag(int fileDescriptor, char* key, char* buffer, int length)
   }
   memmove((void*)buffer, (void*)value, (uint)min(length, valueLength));
   return valueLength;
+}
+
+// EXTRA CRED
+
+int 
+getAllTags(int fileDescriptor, struct Key keys[], int maxTags) {
+  return -1;
+}
+
+int
+getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength) {
+  return -1;
 }

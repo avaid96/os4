@@ -30,6 +30,7 @@ ls(char *path)
   struct dirent de;
   struct stat st;
   
+  printf(2, "%d!\n", getAllTags(1, NULL, 3));
   if((fd = open(path, 0)) < 0){
     printf(2, "ls: cannot open %s\n", path);
     return;

@@ -459,3 +459,45 @@ sys_getFileTag(void)
   }
   return getFileTag(fileDescriptor, key, buffer, length);
 }
+
+int
+sys_getAllTags(void) {
+  int fileDescriptor;
+  struct Key *keys;
+  int maxTags;
+  if (argint(0, &fileDescriptor) < 0){
+    return -1;
+  }
+  if (argptr(1, (char**)&keys, sizeof(struct Key) * maxTags) < 0) {
+    return -1;
+  }
+  if (argint(2, &maxTags) < 0){
+    return -1;
+  }
+  return getAllTags(fileDescriptor, keys, maxTags);
+}
+
+int 
+sys_getFilesByTag(void) {
+  char* key; 
+  char* value;
+  int valueLength;
+  char* results;
+  int resultsLength;
+  if (argstr(0, &key)<0){
+    return -1;
+  }
+  if (argstr(1, &value)<0){
+    return -1;
+  }
+  if (argint(2, &valueLength) < 0){
+    return -1;
+  }
+  if (argstr(1, &results)<0){
+    return -1;
+  }
+  if (argint(1, &resultsLength)<0){
+    return -1;
+  }
+  return getFilesByTag(key, value, valueLength, results, resultsLength);
+}
