@@ -103,6 +103,7 @@ strlen(const char *s)
 int
 findKeyInString(uchar* key, int keyLength, uchar* datastr)
 {
+  //keyLength = strlen((char*)key);
   int i, j;
   for (i=0; i<BSIZE; i+=32) //max total tag size
   {
@@ -139,4 +140,4 @@ findTheEnd(uchar* datastr)
     return -1;
   }
   return i;
-} 
+}

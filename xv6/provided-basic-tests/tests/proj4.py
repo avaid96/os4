@@ -18,9 +18,19 @@ def get_description(name):
   return desc.strip()
 
 test_values = [
- # {'name': 'tagFile'},
- # {'name': 'tagFile-bad-fd'},
+  #not working
+  #working
+  {'name': 'removeFileTag1'},
+  {'name': 'tagFile-bad-fd'},
+  {'name': 'tagFile'},
+  {'name': 'tagFile1'},
+  {'name': 'tagFile2'},
   {'name': 'removeFileTag'},
+  {'name': '17string'},
+  # extra cred
+  #{'name': 'getAllTags1'},
+  #{'name': 'getFileTag'},
+  #{'name': 'getFilesByTag'},
 ]
 
 all_tests = []

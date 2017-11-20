@@ -639,6 +639,7 @@ doCommonChecks(int fileDescriptor, char* key)
   return 0;
 }
 
+
 int
 tagFile(int fileDescriptor, char* key, char* value, int valueLength)
 {
@@ -646,7 +647,8 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   int keySize;
   struct file *f; 
   struct buf *bufptr;
-  /*if (fileDescriptor<0 || fileDescriptor>=NOFILE)
+  /*
+  if (fileDescriptor<0 || fileDescriptor>=NOFILE)
   {
     return -1;
   }
@@ -663,7 +665,8 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   {
     // The key must be at least 2 bytes (including the null termination byte) and at most 10 bytes (including the null termination byte).
     return -1;
-  }*/
+  }
+  */
 
   if (doCommonChecks(fileDescriptor, key) == -1)
   {
@@ -715,10 +718,10 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
 int
 removeFileTag(int fileDescriptor, char* key)
 {
-  uchar *datastr;
-  int keySize;
   struct file *f;
+  int keyLength;
   struct buf *bufptr;
+  uchar *datastr;
 
   if(doCommonChecks(fileDescriptor, key) == -1)
   {
@@ -727,30 +730,29 @@ removeFileTag(int fileDescriptor, char* key)
   else
   {
     f = proc->ofile[fileDescriptor];
-    keySize = strlen(key);
   }
-  if (!f->ip->tags)
+  if (!f->ip->tags) 
   {
-    return -1;
+	return -1;
   }
+  keyLength = strlen(key);
+
   ilock(f->ip);
   bufptr = bread(f->ip->dev,
 		f->ip->tags);
   datastr = (uchar*)bufptr->data;
-  int keyPosition = findKeyInString((uchar*)key, keySize, (uchar*) datastr);
+  int keyPosition = findKeyInString((uchar*)key, keyLength, (uchar*) datastr);
   if (keyPosition < 0)
   {
     brelse(bufptr);
     iunlock(f->ip);
     return -1;
   }
-
-  memset((void*)((uint)datastr + (uint)keyPosition + 10), 0, 28);
+  memset((void*)((uint)datastr + (uint)keyPosition), 0, 28);
   bwrite(bufptr);
   brelse(bufptr);
   iunlock(f->ip);
   return 1;
-   
 }
 
 int 
