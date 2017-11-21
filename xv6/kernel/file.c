@@ -124,3 +124,18 @@ filewrite(struct file *f, char *addr, int n)
   panic("filewrite");
 }
 
+int
+getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength) {
+  struct file *f;
+  int taggedFileCount = 0;
+  acquire(&ftable.lock);
+  for(f=ftable.file; f<ftable.file + NFILE; f++)
+  {
+     if(f->ip)
+     {
+       taggedFileCount += getBuffer(f, key, value, valueLength, results, resultsLength);
+     }
+  }
+  release(&ftable.lock);
+  return taggedFileCount;
+}

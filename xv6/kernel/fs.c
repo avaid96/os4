@@ -844,6 +844,65 @@ getAllTags(int fileDescriptor, struct Key keys[], int maxTags) {
 }
 
 int
-getFilesByTag(char* key, char* value, int valueLength, char* results, int resultsLength) {
-  return -1;
+getBuffer(struct file* f, char* key, char* value, int valueLength, char* results, int resultsLength){
+  struct buf *bufptr;
+  uchar datastr[BSIZE];
+  int keyPosition;
+  int valueLengthActual;
+  char *valueActual;
+  struct dirent *de;
+  char *filename;
+  int filenameLength, i, j;
+  
+  if (!f->ip->tags)
+  {
+    return 0;
+  }
+  bufptr = bread(f->ip->dev, f->ip->tags);
+  memmove((void*)datastr, (void*)bufptr->data, (uint)BSIZE);
+  brelse(bufptr);
+  if ((keyPosition = findKeyInString((uchar*)key, strlen(key), (uchar*)datastr)) >= 0)
+  {
+    valueLengthActual = 17;
+    valueActual = (char*)((uint)datastr + (uint)keyPosition + 10);
+    while(valueLengthActual >= 0 && !valueActual[valueLengthActual])
+    {
+      valueLengthActual-=1;
+    }
+    valueLengthActual += 1;
+    if (valueLengthActual == valueLength)
+    {
+      i = 0;
+      while(i < valueLength && valueActual[i] == value[i])
+      {
+        i++;
+      }
+      if (i == valueLength)
+      {
+        de = (struct dirent*)datastr;
+        if (de->inum)
+        {
+          j = resultsLength - 1;
+          while(j >= 0 && !results[j])
+          {
+            j--;
+          }
+          j++;
+          if(j)
+          {
+            j++;
+          }
+          filename = de->name;
+          filenameLength = strlen(filename);
+          if (resultsLength - j >= filenameLength)
+          {
+            memmove((void*)((uint)results + (uint)j), (void*)filename, (uint)filenameLength);
+            results[filenameLength] = 0;
+            return 1;  
+          }
+        }
+      }
+    }
+  }
+  return 0;
 }
