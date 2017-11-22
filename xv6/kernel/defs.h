@@ -57,6 +57,9 @@ int		removeFileTag(int fileDescriptor, char* key);
 int 		getFileTag(int fileDescriptor, char* key, char* buffer, int length);
 int 		getAllTags(int fileDescriptor, struct Key keys[], int maxTags);
 int             getBuffer(struct file* f, char* key, char* value, int valueLength, char* results, int resultsLength);
+int             findKeyInString(uchar*, int,  uchar*);
+int             findTheEnd(uchar*);
+int		doCommonChecks(int, char*, int);
 
 // ide.c
 void            ideinit(void);
@@ -136,9 +139,6 @@ char*           safestrcpy(char*, const char*, int);
 int             strlen(const char*);
 int             strncmp(const char*, const char*, uint);
 char*           strncpy(char*, const char*, int);
-int             findKeyInString(uchar*, int,  uchar*);
-int             findTheEnd(uchar*);
-int		doCommonChecks(int, char*);
 
 // syscall.c
 int             argint(int, int*);

@@ -10,7 +10,9 @@
 
 #define ROOTINO 1  // root i-number
 #define BSIZE 512  // block size
-
+#define MAXVALSIZE 18 // maximum value size for tags
+#define MAXKEYSIZE 10 // maximum key size for tags
+#define MAXTAGSIZE 32 // max size for the entire tag struct
 // File system super block
 struct superblock {
   uint size;         // Size of file system image (blocks)

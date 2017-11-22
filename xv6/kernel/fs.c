@@ -613,7 +613,7 @@ nameiparent(char *path, char *name)
 }
 
 int
-doCommonChecks(int fileDescriptor, char* key)
+doCommonChecks(int fileDescriptor, char* key, int shouldCheckWritable)
 {
   struct file *f;
   int keyLength;
@@ -626,19 +626,71 @@ doCommonChecks(int fileDescriptor, char* key)
   {
     return -1;
   }
-  if (f->type != FD_INODE || !f->writable || !f->ip)
+  if (shouldCheckWritable == 1)
   {
-    // file must be opened in write mode and check inode and its ptr
-    return -1;
+    if (f->type != FD_INODE || !f->writable || !f->ip)
+    {
+      // file must be opened in write mode and check inode and its ptr
+      return -1;
+    }
+  }
+  else
+  {
+    if (f->type != FD_INODE || !f->readable || !f->ip)
+    {
+      // file must be opened in write mode and check inode and its ptr
+      return -1;
+    }
+    
   }
   if ( !key || (keyLength = strlen(key)) < 1 || keyLength > 9)
-  {
+  { 
     // The key must be at least 2 bytes (including the null termination byte) and at most 10 bytes (including the null termination byte).
     return -1;
   }
   return 0;
 }
 
+int
+findKeyInString(uchar* key, int keyLength, uchar* datastr)
+{
+  int i, j;
+  for (i=0; i<BSIZE; i+=MAXTAGSIZE) //max total tag size
+  {
+    j=0;
+    while(j<10 &&  // j is key index 
+          i+j<BSIZE &&  //i/32 tag's jth byte
+          key[j] &&  //if the key has anything at that point (null ref check)
+          datastr[i+j] &&  //if the datastr has something at that point (null ref check) 
+          key[j]==datastr[i+j]) // check if the character are the same
+    {
+      j++;
+    }
+    if (j == keyLength &&
+        !key[j] &&
+        !datastr[i+j])
+    {
+      return i+j-keyLength;
+    } 
+  }
+  return -1;
+}       
+
+int      
+findTheEnd(uchar* datastr)
+{
+  int i=0;   
+  while(i<BSIZE &&
+        datastr[i]) 
+  { 
+    i+=MAXTAGSIZE;
+  } 
+  if (i==BSIZE)
+  { 
+    return -1; 
+  } 
+  return i;
+}
 
 int
 tagFile(int fileDescriptor, char* key, char* value, int valueLength)
@@ -647,7 +699,7 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
   int keySize;
   struct file *f; 
   struct buf *bufptr;
-  if (doCommonChecks(fileDescriptor, key) == -1)
+  if (doCommonChecks(fileDescriptor, key, 1) == -1)
   {
     return -1;
   }
@@ -657,7 +709,7 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
     keySize = strlen(key);
   }
 
-  if ( !value || valueLength <0 || valueLength > 18 )
+  if ( !value || valueLength <0 || valueLength > MAXVALSIZE )
   {
     return -1;
   }
@@ -678,16 +730,16 @@ tagFile(int fileDescriptor, char* key, char* value, int valueLength)
        iunlock(f->ip);
        return -1;
     }
-    memset((void*)((uint)datastr + (uint)end), 0, 28);
+    memset((void*)((uint)datastr + (uint)end), 0, MAXKEYSIZE+MAXVALSIZE);
     memmove((void*)((uint)datastr + (uint)end), (void*)key, (uint)keySize);
-    memmove((void*)((uint)datastr + (uint)end + 10), (void*)value, (uint)valueLength); 
+    memmove((void*)((uint)datastr + (uint)end + MAXKEYSIZE), (void*)value, (uint)valueLength); 
     bwrite(bufptr);
     brelse(bufptr);
     iunlock(f->ip);
     return 1;
   }  
-  memset((void*)((uint)datastr + (uint)keyPosition + 10), 0, 18);
-  memmove((void*)((uint)datastr + (uint)keyPosition + 10), (void*)value, (uint)valueLength); 
+  memset((void*)((uint)datastr + (uint)keyPosition + MAXKEYSIZE), 0, MAXVALSIZE);
+  memmove((void*)((uint)datastr + (uint)keyPosition + MAXKEYSIZE), (void*)value, (uint)valueLength); 
   bwrite(bufptr);
   brelse(bufptr);
   iunlock(f->ip);
@@ -702,7 +754,7 @@ removeFileTag(int fileDescriptor, char* key)
   struct buf *bufptr;
   uchar *datastr;
 
-  if(doCommonChecks(fileDescriptor, key) == -1)
+  if(doCommonChecks(fileDescriptor, key, 1) == -1)
   {
     return -1;
   }
@@ -727,7 +779,7 @@ removeFileTag(int fileDescriptor, char* key)
     iunlock(f->ip);
     return -1;
   }
-  memset((void*)((uint)datastr + (uint)keyPosition), 0, 28);
+  memset((void*)((uint)datastr + (uint)keyPosition), 0, MAXKEYSIZE+MAXVALSIZE);
   bwrite(bufptr);
   brelse(bufptr);
   iunlock(f->ip);
@@ -738,60 +790,45 @@ int
 getFileTag(int fileDescriptor, char* key, char* buffer, int length)
 {
   struct file *f;
-  int keyLength;
   int valueLength;
-  struct buf *bp;
-  uchar str[BSIZE];
+  struct buf *bufptr;
+  uchar datastr[BSIZE];
   uchar *value;
-  if (fileDescriptor < 0 || fileDescriptor >= NOFILE)
+  if (doCommonChecks(fileDescriptor, key, 0) == -1)
   {
-     return -1;
-  }
-  if ((f = proc->ofile[fileDescriptor]) == 0)
-  {
-     return -1;
-  }
-  if (f->type != FD_INODE || !f->readable || !f->ip)
-  {
-     return -1;
-  }
-  if (!key || (keyLength = strlen(key)) < 1 || keyLength> 9)
-  {
-     return -1;
+    return -1; 
   }
   if (!buffer)
   {
      return -1;
   }
-  if (length < 0 || length > 18)
+  if (length < 0 || length > MAXVALSIZE)
   {
      return -1;
   }
-  
+  f=proc->ofile[fileDescriptor];
 
   ilock(f->ip);
   if (!f->ip->tags)
   {
     f->ip->tags = balloc(f->ip->dev);
   }
-  bp = bread(f->ip->dev, f->ip->tags);
-  memmove((void*)str, (void*)bp->data, (uint)BSIZE);
-  brelse(bp);
+  bufptr = bread(f->ip->dev, f->ip->tags);
+  memmove((void*)datastr, (void*)bufptr->data, (uint)BSIZE);
+  brelse(bufptr);
   
   iunlock(f->ip);
   
-  keyLength = strlen(key);
-  int keyPos = findKeyInString((uchar*) key, keyLength, (uchar*) str);
-  if (keyPos < 0){
+  int keyPosition = findKeyInString((uchar*) key, strlen(key), (uchar*) datastr);
+  if (keyPosition < 0){
     return -1;
   }
-  value = (uchar*)((uint)str + (uint)keyPos + 10);
-  valueLength = 17;
-  while (valueLength >= 0 && !value[valueLength])
+  value = (uchar*)((uint)datastr + (uint)keyPosition + MAXKEYSIZE);
+  valueLength = 0;
+  while (valueLength < MAXVALSIZE && value[valueLength])
   {
-    valueLength--;
+    valueLength++;
   }
-  valueLength++;
   if (!valueLength)
   {
     return -1;
@@ -834,7 +871,7 @@ getAllTags(int fileDescriptor, struct Key keys[], int maxTags) {
    brelse(bp);
    iunlock(f->ip);
    cprintf("iabc\n");
-   for (i = 0, j = 0; i < BSIZE; i += 32){
+   for (i = 0, j = 0; i < BSIZE; i += MAXTAGSIZE){
       if (str[i]){
          memmove((void*)keys[j].key, (void*)((uint)str + i), (uint)strlen((char*)((uint)str + (uint)i)));
          j++;
@@ -864,7 +901,7 @@ getBuffer(struct file* f, char* key, char* value, int valueLength, char* results
   if ((keyPosition = findKeyInString((uchar*)key, strlen(key), (uchar*)datastr)) >= 0)
   {
     valueLengthActual = 17;
-    valueActual = (char*)((uint)datastr + (uint)keyPosition + 10);
+    valueActual = (char*)((uint)datastr + (uint)keyPosition + MAXKEYSIZE);
     while(valueLengthActual >= 0 && !valueActual[valueLengthActual])
     {
       valueLengthActual-=1;
@@ -882,12 +919,11 @@ getBuffer(struct file* f, char* key, char* value, int valueLength, char* results
         de = (struct dirent*)datastr;
         if (de->inum)
         {
-          j = resultsLength - 1;
-          while(j >= 0 && !results[j])
+          j = 0;
+          while(j < resultsLength && results[j])
           {
-            j--;
+            j++;
           }
-          j++;
           if(j)
           {
             j++;

@@ -20,19 +20,18 @@ def get_description(name):
 test_values = [
   #not working
   #working
-  #{'name': 'removeFileTag1'},
-  #{'name': 'tagFile-bad-fd'},
-  #{'name': 'tagFile'},
-  #{'name': 'tagFile1'},
-  #{'name': 'tagFile2'},
-  #{'name': 'removeFileTag'},
-  #{'name': '17string'},
+  {'name': 'removeFileTag1'},
+  {'name': 'tagFile-bad-fd'},
+  {'name': 'tagFile'},
+  {'name': 'tagFile1'},
+  {'name': 'tagFile2'},
+  {'name': 'removeFileTag'},
+  {'name': '17string'},
   # extra cred
-  #{'name': 'getAllTags'},
+  {'name': 'getAllTags'},
   {'name': 'getAllTags1'},
-  #{'name': 'getAllTags1'},
-  #{'name': 'getFileTag'},
-  #{'name': 'getFilesByTag'},
+  {'name': 'getFileTag'},
+  {'name': 'getFilesByTag'},
 ]
 
 all_tests = []
